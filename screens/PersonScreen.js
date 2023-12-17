@@ -21,6 +21,8 @@ import {
 } from "../api/moviedb";
 import Loading from "../components/loading";
 import { styles } from "../theme";
+import { auth } from '../config/firebase'
+
 
 const ios = Platform.OS == "ios";
 const verticalMargin = ios ? "" : " my-3";

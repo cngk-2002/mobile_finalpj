@@ -22,6 +22,8 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../components/loading";
 import { styles } from "../theme";
+import { auth } from '../config/firebase'
+
 
 const ios = Platform.OS === "ios";
 
@@ -55,12 +57,27 @@ export default function HomeScreen() {
     if (data && data.results) setTopRated(data.results);
   };
 
+  const HandleSeeAllPress = (title, data) => {
+    if (title === "Top Rated") 
+    {
+      navigation.navigate("TopRated", { title, data });
+    }
+    else
+    {
+      navigation.navigate("Upcoming", { title, data });
+    }
+  }
+
+
   return (
     <View className="flex-1 bg-neutral-800">
       <SafeAreaView className={ios ? "-mb-2" : "mb-3"}>
         <StatusBar style="light" />
         <View className="flex-row justify-between items-center mx-4">
-          <Bars3CenterLeftIcon size="30" strokeWidth={2} color="white" />
+          <TouchableOpacity onPress={() => navigation.openDrawer()}
+          >
+            <Bars3CenterLeftIcon size="30" strokeWidth={2} color="white" />
+          </TouchableOpacity>
           <Text className="text-white text-3xl font-bold">
             <Text style={styles.text}>M</Text>ovies
           </Text>
@@ -81,12 +98,12 @@ export default function HomeScreen() {
 
           {/* upcoming movies row */}
           {upcoming.length > 0 && (
-            <MovieList title="Upcoming" data={upcoming} />
+            <MovieList title="Upcoming" data={upcoming}  SeeAllPress={() => HandleSeeAllPress("Upcoming", upcoming)}/>
           )}
 
           {/* top rated movies row */}
           {topRated.length > 0 && (
-            <MovieList title="Top Rated" data={topRated} />
+            <MovieList title="Top Rated" data={topRated} SeeAllPress={() => HandleSeeAllPress("Top Rated", topRated)}/>
           )}
         </ScrollView>
       )}

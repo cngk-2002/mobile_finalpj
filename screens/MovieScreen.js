@@ -24,6 +24,8 @@ import {
 } from "../api/moviedb";
 import { styles, theme } from "../theme";
 import Loading from "../components/loading";
+import { auth } from '../config/firebase'
+
 
 const ios = Platform.OS == "ios";
 const topMargin = ios ? "" : " mt-3";
@@ -169,3 +171,4 @@ export default function MovieScreen() {
     </ScrollView>
   );
 }
+

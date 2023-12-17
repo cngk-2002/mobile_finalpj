@@ -16,14 +16,14 @@ import {
 import { styles } from "../theme";
 const { width, height } = Dimensions.get("window");
 
-export default function MovieList({ title, hideSeeAll, data }) {
+export default function MovieList({ title, hideSeeAll, data, SeeAllPress }) {
   const navigation = useNavigation();
   return (
     <View className="mb-8 space-y-4">
       <View className="mx-4 flex-row justify-between items-center">
         <Text className="text-white text-lg">{title}</Text>
         {!hideSeeAll && (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={SeeAllPress}>
             <Text style={styles.text} className="text-lg">
               See All
             </Text>

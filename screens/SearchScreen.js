@@ -15,6 +15,8 @@ import { useNavigation } from "@react-navigation/native";
 import { fallbackMoviePoster, image185, searchMovies } from "../api/moviedb";
 import { debounce } from "lodash";
 import Loading from "../components/loading";
+import { auth } from '../config/firebase'
+
 
 const { width, height } = Dimensions.get("window");
 
