@@ -22,7 +22,6 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../components/loading";
 import { styles } from "../theme";
-import { auth } from '../config/firebase'
 
 
 const ios = Platform.OS === "ios";
@@ -79,7 +78,7 @@ export default function HomeScreen() {
             <Bars3CenterLeftIcon size="30" strokeWidth={2} color="white" />
           </TouchableOpacity>
           <Text className="text-white text-3xl font-bold">
-            <Text style={styles.text}>M</Text>ovies
+            <Text style={styles.text}>M</Text>oviecon
           </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Search")}>
             <MagnifyingGlassIcon size="30" strokeWidth={2} color="white" />
@@ -93,15 +92,12 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 10 }}
         >
-          {/* Trending Movies Carousel */}
           {trending.length > 0 && <TrendingMovies data={trending} />}
 
-          {/* upcoming movies row */}
           {upcoming.length > 0 && (
             <MovieList title="Upcoming" data={upcoming}  SeeAllPress={() => HandleSeeAllPress("Upcoming", upcoming)}/>
           )}
 
-          {/* top rated movies row */}
           {topRated.length > 0 && (
             <MovieList title="Top Rated" data={topRated} SeeAllPress={() => HandleSeeAllPress("Top Rated", topRated)}/>
           )}

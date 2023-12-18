@@ -59,11 +59,62 @@ const apiCall = async (endpoint, params) => {
 export const fetchTrendingMovies = () => {
   return apiCall(trendingMoviesEndpoint);
 };
-export const fetchUpcomingMovies = () => {
-  return apiCall(upcomingMoviesEndpoint);
+export const fetchUpcomingMovies = async (page = 1, pageSize = 20) => {
+  const params = {
+    page,
+    page_size: pageSize,
+    api_key: apiKey,
+  };
+
+  try {
+    let response = await apiCall(upcomingMoviesEndpoint, params);
+
+    if (response.total_pages > page) {
+      const nextPage1 = await apiCall(upcomingMoviesEndpoint, {
+        ...params,
+        page: page + 1,
+      });
+      response.results = response.results.concat(nextPage1.results);
+
+      if (response.total_pages > page + 1) {
+        const nextPage2 = await apiCall(upcomingMoviesEndpoint, {
+          ...params,
+          page: page + 2,
+        });
+        response.results = response.results.concat(nextPage2.results);
+      }
+    }
+
+    return response;
+  } catch (error) {
+    console.log("error: ", error);
+    return {};
+  }
 };
-export const fetchTopRatedMovies = () => {
-  return apiCall(topRatedMoviesEndpoint);
+
+export const fetchTopRatedMovies = async (page = 1, pageSize = 20) => {
+  const params = {
+    page,
+    page_size: pageSize,
+    api_key: apiKey,
+  };
+
+  try {
+    let response = await apiCall(topRatedMoviesEndpoint, params);
+
+    if (response.total_pages > page) {
+      const nextPage = await apiCall(topRatedMoviesEndpoint, {
+        ...params,
+        page: page + 1,
+      });
+      response.results = response.results.concat(nextPage.results);
+    }
+
+    return response;
+  } catch (error) {
+    console.log("error: ", error);
+    return {};
+  }
 };
 
 // movie screen apis

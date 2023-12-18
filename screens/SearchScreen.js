@@ -15,7 +15,6 @@ import { useNavigation } from "@react-navigation/native";
 import { fallbackMoviePoster, image185, searchMovies } from "../api/moviedb";
 import { debounce } from "lodash";
 import Loading from "../components/loading";
-import { auth } from '../config/firebase'
 
 
 const { width, height } = Dimensions.get("window");
@@ -48,7 +47,6 @@ export default function SearchScreen() {
 
   return (
     <SafeAreaView className="bg-neutral-800 flex-1">
-      {/* search input */}
       <View className="mx-4 mb-3 flex-row justify-between items-center border border-neutral-500 rounded-full">
         <TextInput
           onChangeText={handleTextDebounce}
@@ -64,7 +62,6 @@ export default function SearchScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* search results */}
       {loading ? (
         <Loading />
       ) : results.length > 0 ? (
