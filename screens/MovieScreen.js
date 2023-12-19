@@ -155,7 +155,7 @@ export default function MovieScreen(route) {
           <View className="flex items-center">
             <View className="bg-yellow-500 w-10 h-10 rounded-full items-center justify-center">
               <Text className="text-white font-bold">
-                {movieDetails.vote_average}
+                {movieDetails.vote_average.toFixed(1)}
               </Text>
             </View>
           </View>
