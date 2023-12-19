@@ -21,7 +21,12 @@ export default function MovieList({ title, hideSeeAll, data, SeeAllPress }) {
   return (
     <View className="mb-8 space-y-4">
       <View className="mx-4 flex-row justify-between items-center">
-        <Text className="text-white text-lg">{title}</Text>
+        <Text
+          style={title === "Trending" ? { color: "red", fontWeight: "bold" } : {}}
+          className="text-white text-lg"
+        >
+          {title}
+        </Text>
         {!hideSeeAll && (
           <TouchableOpacity onPress={SeeAllPress}>
             <Text style={styles.text} className="text-lg">

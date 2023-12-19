@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Platform,
+  Linking,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -21,16 +22,16 @@ import {
   fetchMovieDetails,
   fetchSimilarMovies,
   image500,
+  fetchMovieTrailers,
 } from "../api/moviedb";
-import { styles, theme } from "../theme";
 import Loading from "../components/loading";
-
+import { fetchMovieDetailsWithRating } from "../api/moviedb";
 
 const ios = Platform.OS == "ios";
-const topMargin = ios ? "" : " mt-3";
+const topMargin = ios ? "" : "mt-3";
 var { width, height } = Dimensions.get("window");
 
-export default function MovieScreen() {
+export default function MovieScreen(route) {
   const { params: item } = useRoute();
   const navigation = useNavigation();
   const [movie, setMovie] = useState({});
@@ -39,14 +40,26 @@ export default function MovieScreen() {
   const [isFavourite, toggleFavourite] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const id = route?.params?.id || item?.id;
+  const [movieDetails, setMovieDetails] = useState(null);
+
+  useEffect(() => {
+    const getMovieDetails = async () => {
+      const data = await fetchMovieDetailsWithRating(id);
+      setMovieDetails(data);
+    };
+
+    getMovieDetails();
+  }, [id]);
+
   useEffect(() => {
     setLoading(true);
-    getMovieDetials(item.id);
+    getMovieDetails(item.id);
     getMovieCredits(item.id);
     getSimilarMovies(item.id);
   }, [item]);
 
-  const getMovieDetials = async (id) => {
+  const getMovieDetails = async (id) => {
     const data = await fetchMovieDetails(id);
     console.log("got movie details");
     setLoading(false);
@@ -54,6 +67,7 @@ export default function MovieScreen() {
       setMovie({ ...movie, ...data });
     }
   };
+
   const getMovieCredits = async (id) => {
     const data = await fetchMovieCredits(id);
     console.log("got movie credits");
@@ -61,6 +75,7 @@ export default function MovieScreen() {
       setCast(data.cast);
     }
   };
+
   const getSimilarMovies = async (id) => {
     const data = await fetchSimilarMovies(id);
     console.log("got similar movies");
@@ -68,6 +83,18 @@ export default function MovieScreen() {
       setSimilarMovies(data.results);
     }
   };
+
+  const handleWatchTrailer = async () => {
+    const trailers = await fetchMovieTrailers(item.id);
+
+    if (trailers && trailers.results && trailers.results.length > 0) {
+      const trailerKey = trailers.results[0].key;
+      Linking.openURL(`https://www.youtube.com/watch?v=${trailerKey}`);
+    } else {
+      alert("No trailer found");
+    }
+  };
+
   return (
     <ScrollView
       contentContainerStyle={{ paddingBottom: 20 }}
@@ -75,14 +102,14 @@ export default function MovieScreen() {
     >
       <View className="w-full">
         <SafeAreaView
-          className={
-            "absolute z-20 w-full flex-row justify-between items-center px-4 " +
-            topMargin
-          }
+          className={`absolute z-20 w-full flex-row justify-between items-center px-4 ${topMargin}`}
         >
           <TouchableOpacity
-            style={styles.background}
-            className="rounded-xl p-1"
+            style={{
+              backgroundColor: "transparent",
+              borderRadius: 10,
+              padding: 10,
+            }}
             onPress={() => navigation.goBack()}
           >
             <ChevronLeftIcon size="28" strokeWidth={2.5} color="white" />
@@ -120,30 +147,37 @@ export default function MovieScreen() {
         )}
       </View>
 
-
       <View style={{ marginTop: -(height * 0.09) }} className="space-y-3">
         <Text className="text-white text-center text-3xl font-bold tracking-widest">
-          {movie?.title}
+          {movie?.title} ({movie?.release_date?.split("-")[0] || "N/A"})
         </Text>
-        {movie?.id ? (
-          <Text className="text-neutral-400 font-semibold text-base text-center">
-            {movie?.status} • {movie?.release_date?.split("-")[0] || "N/A"} •{" "}
-            {movie?.runtime} min
-          </Text>
-        ) : null}
+        {movieDetails && (
+          <View className="flex items-center">
+            <View className="bg-yellow-500 w-10 h-10 rounded-full items-center justify-center">
+              <Text className="text-white font-bold">
+                {movieDetails.vote_average}
+              </Text>
+            </View>
+          </View>
+        )}
         <View className="flex-row justify-center mx-4 space-x-2">
           {movie?.genres?.map((genre, index) => {
-            let showDot = index + 1 != movie.genres.length;
             return (
               <Text
                 key={index}
-                className="text-neutral-400 font-semibold text-base text-center"
+                className="text-white bg-neutral-700 px-3 py-1 rounded-md text-sm"
               >
-                {genre?.name} {showDot ? "•" : null}
+                {genre?.name}
               </Text>
             );
           })}
         </View>
+        <TouchableOpacity
+          onPress={handleWatchTrailer}
+          className=" self-center py-3 px-3 bg-red-500 rounded-md"
+        >
+          <Text className="text-white text-base font-bold">Watch Trailer</Text>
+        </TouchableOpacity>
         <Text className="text-neutral-400 mx-4 tracking-wide">
           {movie?.overview}
         </Text>
@@ -153,7 +187,7 @@ export default function MovieScreen() {
       )}
       {movie?.id && similarMovies.length > 0 && (
         <MovieList
-          title={"Similar Movies"}
+          title={"More like this"}
           hideSeeAll={true}
           data={similarMovies}
         />
@@ -161,4 +195,3 @@ export default function MovieScreen() {
     </ScrollView>
   );
 }
-

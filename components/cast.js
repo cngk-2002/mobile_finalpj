@@ -27,9 +27,10 @@ export default function Cast({ cast, navigation }) {
                 onPress={() => navigation.navigate("Person", person)}
                 className="mr-4 items-center"
               >
-                <View className="overflow-hidden rounded-full h-20 w-20 items-center border border-neutral-500">
+                <View className="space-y-1 mr-4">
                   <Image
-                    className="rounded-2xl h-24 w-20"
+                    className="rounded-3xl"
+                    style={{ width: width * 0.33, height: height * 0.22 }}
                     source={{
                       uri:
                         image185(person?.profile_path) || fallbackPersonImage,
@@ -38,12 +39,12 @@ export default function Cast({ cast, navigation }) {
                 </View>
 
                 <Text className="text-white text-xs mt-1">
-                  {person?.character.length > 10
+                  {person?.character.length > 20
                     ? person.character.slice(0, 10) + "..."
                     : person?.character}
                 </Text>
                 <Text className="text-neutral-400 text-xs">
-                  {person?.original_name.length > 10
+                  {person?.original_name.length > 20
                     ? person.original_name.slice(0, 10) + "..."
                     : person?.original_name}
                 </Text>
