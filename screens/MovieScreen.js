@@ -16,6 +16,7 @@ import { HeartIcon } from "react-native-heroicons/solid";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Cast from "../components/cast";
 import MovieList from "../components/movieList";
+import { theme } from "../theme";
 import {
   fallbackMoviePoster,
   fetchMovieCredits,

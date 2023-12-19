@@ -117,7 +117,7 @@ export default function HomeScreen() {
 
           {upcoming.length > 0 && (
             <MovieList
-              title="Upcoming"
+              title="Coming Soon"
               data={upcoming}
               SeeAllPress={() => HandleSeeAllPress("Upcoming", upcoming)}
             />
