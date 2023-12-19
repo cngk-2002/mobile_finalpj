@@ -18,6 +18,7 @@ import {
   fetchPersonMovies,
   image342,
 } from "../api/moviedb";
+import { CakeIcon, UserIcon, BriefcaseIcon, StarIcon } from "react-native-heroicons/outline";
 import Loading from "../components/loading";
 import { styles } from "../theme";
 
@@ -56,7 +57,7 @@ export default function PersonScreen() {
 
   return (
     <ScrollView
-      className="flex-1 bg-neutral-900"
+      className="flex-1 bg-black"
       contentContainerStyle={{ paddingBottom: 20 }}
     >
       <SafeAreaView
@@ -64,6 +65,7 @@ export default function PersonScreen() {
           "flex-row justify-between items-center mx-4 z-10 " + verticalMargin
         }
       >
+        <View className="flex-row items-center mx-4 mb-5">
         <TouchableOpacity
           style={styles.background}
           className="rounded-xl p-1"
@@ -71,21 +73,16 @@ export default function PersonScreen() {
         >
           <ChevronLeftIcon size="28" strokeWidth={2.5} color="white" />
         </TouchableOpacity>
+
+        <Text className="text-white text-2xl font-bold ml-12">Actor Information</Text>
+        </View>
       </SafeAreaView>
       {loading ? (
         <Loading />
       ) : (
         <View>
-          <View
-            className="flex-row justify-center"
-            style={{
-              shadowColor: "gray",
-              shadowRadius: 40,
-              shadowOffset: { width: 0, height: 5 },
-              shadowOpacity: 1,
-            }}
-          >
-            <View className="items-center rounded-full overflow-hidden h-72 w-72 border-neutral-500 border-2">
+          <View className="flex-row justify-center">
+            <View className="items-center rounded-full overflow-hidden h-72 w-72">
               <Image
                 source={{
                   uri: image342(person?.profile_path) || fallbackPersonImage,
@@ -104,27 +101,27 @@ export default function PersonScreen() {
             </Text>
           </View>
 
-          <View className="mx-3 p-4 mt-6 flex-row justify-between items-center bg-neutral-700 rounded-full ">
-            <View className="border-r-2 border-r-neutral-400 px-2 items-center">
-              <Text className="text-white font-semibold ">Gender</Text>
+          <View className="mx-6 p-4 mt-6 flex-row justify-between items-center">
+            <View className="border-r-2 border-r-neutral-400 pr-4 items-center">
+              <UserIcon color="white" size={15}/>
               <Text className="text-neutral-300 text-sm">
                 {person?.gender == 1 ? "Female" : "Male"}
               </Text>
             </View>
-            <View className="border-r-2 border-r-neutral-400 px-2 items-center">
-              <Text className="text-white font-semibold">Birthday</Text>
+            <View className="border-r-2 border-r-neutral-400 pr-4 items-center">
+              <CakeIcon color="white" size={15}/>
               <Text className="text-neutral-300 text-sm">
                 {person?.birthday}
               </Text>
             </View>
-            <View className="border-r-2 border-r-neutral-400 px-2 items-center">
-              <Text className="text-white font-semibold">known for</Text>
+            <View className="border-r-2 border-r-neutral-400 pr-4 items-center">
+              <BriefcaseIcon color="white" size={15}/>
               <Text className="text-neutral-300 text-sm">
                 {person?.known_for_department}
               </Text>
             </View>
             <View className="px-2 items-center">
-              <Text className="text-white font-semibold">Popularity</Text>
+              <StarIcon color="white" size={15}/>      
               <Text className="text-neutral-300 text-sm">
                 {person?.popularity?.toFixed(2)} %
               </Text>
