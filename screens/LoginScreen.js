@@ -1,31 +1,40 @@
-import { View, Text, TouchableOpacity, Image, TextInput } from 'react-native'
+import { View, Text, TouchableOpacity, Image, TextInput, Alert } from 'react-native'
 import React, { useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import {ArrowLeftIcon} from 'react-native-heroicons/solid'
-import { themeColors } from '../theme'
 import { useNavigation } from '@react-navigation/native'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../config/firebase'
+import { styles } from "../theme";
+
 
 export default function LoginScreen() {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = async ()=>{
-      if(email && password){
-          try{
-              await signInWithEmailAndPassword(auth, email, password);
-          }catch(err){
-              console.log('got error: ',err.message);
-          }
-      }
-  }
+  const handleSubmit = async () => {
+    if (!email || !email.includes('@')) {
+      Alert.alert('Invalid email', 'Please enter a valid email.');
+      return;
+    }
+  
+    if (!password || password.length < 6) {
+      Alert.alert('Invalid password', 'Password should be at least 6 characters long.');
+      return;
+    }
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      Alert.alert('No account found', 'Please try again.');
+    }
+  };
   return (
     <View className="flex-1 bg-white ">
       <View 
         className="flex-1 bg-white px-8 justify-center">
           <View className="form space-y-2">
+          <Text className="text-black text-5xl mb-10 ml-14 font-bold">
+            <Text style={styles.text}>M</Text>oviecon
+          </Text>
             <Text className="text-gray-700 ml-4">Email Address</Text>
             <TextInput 
               className="p-4 bg-gray-100 text-gray-700 rounded-2xl mb-3"

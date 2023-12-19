@@ -24,7 +24,6 @@ import {
 } from "../api/moviedb";
 import { styles, theme } from "../theme";
 import Loading from "../components/loading";
-import { auth } from '../config/firebase'
 
 
 const ios = Platform.OS == "ios";
@@ -74,7 +73,6 @@ export default function MovieScreen() {
       contentContainerStyle={{ paddingBottom: 20 }}
       className="flex-1 bg-neutral-900"
     >
-      {/* back button and movie poster */}
       <View className="w-full">
         <SafeAreaView
           className={
@@ -122,21 +120,17 @@ export default function MovieScreen() {
         )}
       </View>
 
-      {/* movie details */}
 
       <View style={{ marginTop: -(height * 0.09) }} className="space-y-3">
-        {/* title */}
         <Text className="text-white text-center text-3xl font-bold tracking-widest">
           {movie?.title}
         </Text>
-        {/* status, release year, runtime */}
         {movie?.id ? (
           <Text className="text-neutral-400 font-semibold text-base text-center">
             {movie?.status} • {movie?.release_date?.split("-")[0] || "N/A"} •{" "}
             {movie?.runtime} min
           </Text>
         ) : null}
-        {/* genres  */}
         <View className="flex-row justify-center mx-4 space-x-2">
           {movie?.genres?.map((genre, index) => {
             let showDot = index + 1 != movie.genres.length;
@@ -150,17 +144,13 @@ export default function MovieScreen() {
             );
           })}
         </View>
-        {/* description */}
         <Text className="text-neutral-400 mx-4 tracking-wide">
           {movie?.overview}
         </Text>
       </View>
-      {/* cast */}
       {movie?.id && cast.length > 0 && (
         <Cast navigation={navigation} cast={cast} />
       )}
-
-      {/* similar movies section */}
       {movie?.id && similarMovies.length > 0 && (
         <MovieList
           title={"Similar Movies"}
