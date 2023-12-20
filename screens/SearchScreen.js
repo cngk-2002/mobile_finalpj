@@ -50,15 +50,15 @@ export default function SearchScreen() {
       <View className="mx-4 mb-3 flex-row justify-between items-center border border-neutral-500 rounded-full">
         <TextInput
           onChangeText={handleTextDebounce}
-          placeholder="Search Movie"
+          placeholder="Search movies..."
           placeholderTextColor={"lightgray"}
           className="pb-1 pl-6 flex-1 text-base font-semibold text-white tracking-wider"
         />
         <TouchableOpacity
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.navigate("HomeScreen")}
           className="rounded-full p-3 m-1 bg-neutral-500"
         >
-          <XMarkIcon size="25" color="white" />
+          <XMarkIcon size="25" color="black" />
         </TouchableOpacity>
       </View>
 

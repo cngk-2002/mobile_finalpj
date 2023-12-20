@@ -73,7 +73,7 @@ const HomeStack = () => {
   return (
     <Stack.Navigator>
     <Stack.Screen
-      name="Home"
+      name="HomeScreen"
       options={{ headerShown: false }}
       component={HomeScreen}
     />

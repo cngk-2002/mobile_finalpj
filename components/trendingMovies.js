@@ -50,3 +50,5 @@ const MovieCard = ({ item, handleClick }) => {
     </TouchableWithoutFeedback>
   );
 };
+
+

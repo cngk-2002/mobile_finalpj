@@ -1,3 +1,5 @@
+// moviedb.js
+
 import axios from "axios";
 
 const apiKey = "e9aab9752d56fda1d7e53b3ad4b503b2";
@@ -18,13 +20,19 @@ const movieCreditsEndpoint = (id) =>
   `${apiBaseUrl}/movie/${id}/credits?api_key=${apiKey}`;
 const similarMoviesEndpoint = (id) =>
   `${apiBaseUrl}/movie/${id}/similar?api_key=${apiKey}`;
+const movieTrailersEndpoint = (id) =>
+  `${apiBaseUrl}/movie/${id}/videos?api_key=${apiKey}`;
+const popularMoviesEndpoint = `${apiBaseUrl}/movie/popular?api_key=${apiKey}`;
+const movieDetailsWithRatingEndpoint = (id) =>
+  `${apiBaseUrl}/movie/${id}?api_key=${apiKey}&append_to_response=credits,videos`;
+
 
 // person
-const personDetailsEndpoint = (id) =>
-  `${apiBaseUrl}/person/${id}?api_key=${apiKey}`;
 const personMoviesEndpoint = (id) =>
   `${apiBaseUrl}/person/${id}/movie_credits?api_key=${apiKey}`;
-
+const personDetailsEndpoint = (id) =>
+  `${apiBaseUrl}/person/${id}?api_key=${apiKey}`;
+    
 // functions to get images of different widths, (show images using these to improve the loading times)
 export const image500 = (posterPath) =>
   posterPath ? "https://image.tmdb.org/t/p/w500" + posterPath : null;
@@ -117,6 +125,35 @@ export const fetchTopRatedMovies = async (page = 1, pageSize = 20) => {
   }
 };
 
+export const fetchPopularMovies = async (page = 1, pageSize = 20) => {
+  const params = {
+    page,
+    page_size: pageSize,
+    api_key: apiKey,
+  };
+
+  try {
+    let response = await apiCall(popularMoviesEndpoint, params);
+
+    if (response.total_pages > page) {
+      const nextPage = await apiCall(popularMoviesEndpoint, {
+        ...params,
+        page: page + 1,
+      });
+      response.results = response.results.concat(nextPage.results);
+    }
+
+    return response;
+  } catch (error) {
+    console.log("error: ", error);
+    return {};
+  }
+};
+
+export const fetchMovieDetailsWithRating = (id) => {
+  return apiCall(movieDetailsWithRatingEndpoint(id));
+};
+
 // movie screen apis
 export const fetchMovieDetails = (id) => {
   return apiCall(movieDetailsEndpoint(id));
@@ -126,6 +163,9 @@ export const fetchMovieCredits = (movieId) => {
 };
 export const fetchSimilarMovies = (movieId) => {
   return apiCall(similarMoviesEndpoint(movieId));
+};
+export const fetchMovieTrailers = (movieId) => {
+  return apiCall(movieTrailersEndpoint(movieId));
 };
 
 // person screen apis

@@ -18,10 +18,12 @@ import {
   fetchTopRatedMovies,
   fetchTrendingMovies,
   fetchUpcomingMovies,
+  fetchPopularMovies,
 } from "../api/moviedb";
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../components/loading";
 import { styles } from "../theme";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 
 const ios = Platform.OS === "ios";
@@ -30,6 +32,7 @@ export default function HomeScreen() {
   const [trending, setTrending] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
   const [topRated, setTopRated] = useState([]);
+  const [popular, setPopular] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
@@ -37,6 +40,7 @@ export default function HomeScreen() {
     getTrendingMovies();
     getUpcomingMovies();
     getTopRatedMovies();
+    getPopularMovies();
   }, []);
 
   const getTrendingMovies = async () => {
@@ -56,25 +60,30 @@ export default function HomeScreen() {
     if (data && data.results) setTopRated(data.results);
   };
 
-  const HandleSeeAllPress = (title, data) => {
-    if (title === "Top Rated") 
-    {
-      navigation.navigate("TopRated", { title, data });
+  const getPopularMovies = async () => {
+    try {
+      const data = await fetchPopularMovies();
+      console.log("got popular movies", data.results.length);
+      if (data && data.results) setPopular(data.results);
+    } catch (error) {
+      console.log("error fetching popular movies: ", error);
     }
-    else
-    {
+  };
+
+  const HandleSeeAllPress = (title, data) => {
+    if (title === "Top Rated") {
+      navigation.navigate("TopRated", { title, data });
+    } else {
       navigation.navigate("Upcoming", { title, data });
     }
-  }
-
+  };
 
   return (
     <View className="flex-1 bg-neutral-800">
       <SafeAreaView className={ios ? "-mb-2" : "mb-3"}>
         <StatusBar style="light" />
         <View className="flex-row justify-between items-center mx-4">
-          <TouchableOpacity onPress={() => navigation.openDrawer()}
-          >
+          <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <Bars3CenterLeftIcon size="30" strokeWidth={2} color="white" />
           </TouchableOpacity>
           <Text className="text-white text-3xl font-bold">
@@ -92,14 +101,34 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 10 }}
         >
-          {trending.length > 0 && <TrendingMovies data={trending} />}
+          {trending.length > 0 && (
+            <MovieList title="Trending" data={trending} hideSeeAll={true} />
+          )}
+
+          {popular.length > 0 && (
+            <MovieList
+              title="Popular Movies"
+              data={popular}
+              SeeAllPress={() =>
+                HandleSeeAllPress("Popular Movies", popular)
+              }
+            />
+          )}
 
           {upcoming.length > 0 && (
-            <MovieList title="Upcoming" data={upcoming}  SeeAllPress={() => HandleSeeAllPress("Upcoming", upcoming)}/>
+            <MovieList
+              title="Coming Soon"
+              data={upcoming}
+              SeeAllPress={() => HandleSeeAllPress("Upcoming", upcoming)}
+            />
           )}
 
           {topRated.length > 0 && (
-            <MovieList title="Top Rated" data={topRated} SeeAllPress={() => HandleSeeAllPress("Top Rated", topRated)}/>
+            <MovieList
+              title="Top Rated"
+              data={topRated}
+              SeeAllPress={() => HandleSeeAllPress("Top Rated", topRated)}
+            />
           )}
         </ScrollView>
       )}
