@@ -38,7 +38,7 @@ const UpcomingScreen = ({ route }) => {
   };
 
   return (
-    <SafeAreaView className="bg-neutral-800 flex-1">
+    <SafeAreaView className="bg-black flex-1">
       <View className="flex-row items-center mx-4 mb-5">
         <TouchableOpacity
           style={styles.background}

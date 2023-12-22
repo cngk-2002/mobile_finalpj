@@ -10,6 +10,7 @@ const trendingMoviesEndpoint = `${apiBaseUrl}/trending/movie/day?api_key=${apiKe
 const upcomingMoviesEndpoint = `${apiBaseUrl}/movie/upcoming?api_key=${apiKey}`;
 const topRatedMoviesEndpoint = `${apiBaseUrl}/movie/top_rated?api_key=${apiKey}`;
 const searchMoviesEndpoint = `${apiBaseUrl}/search/movie?api_key=${apiKey}`;
+const searchPeopleEndpoint = `${apiBaseUrl}/search/person?api_key=${apiKey}`;
 
 // endpoints with dynamic params
 
@@ -179,4 +180,8 @@ export const fetchPersonMovies = (personId) => {
 // search screen apis
 export const searchMovies = (params) => {
   return apiCall(searchMoviesEndpoint, params);
+};
+
+export const searchPeople = (params) => {
+  return apiCall(searchPeopleEndpoint, params);
 };
