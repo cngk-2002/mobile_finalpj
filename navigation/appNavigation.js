@@ -21,6 +21,7 @@ import TopRatedScreen from "../screens/TopRatedScreen";
 import Bookmark from "../screens/Bookmark";
 import { auth } from "../config/firebase";
 import { getAuth } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -42,8 +43,15 @@ function MyDrawer() {
 const HandleLogOut = () => {
   auth
     .signOut()
-    .then(() => {
+    .then(async () => {
       console.log("Sign out successfully");
+      // Remove 'bookmarks' from AsyncStorage when logging out
+      try {
+        await AsyncStorage.removeItem('bookmarks');
+        console.log("'bookmarks' removed from AsyncStorage");
+      } catch (error) {
+        console.log("Failed to remove 'bookmarks' from AsyncStorage:", error);
+      }
     })
     .catch((error) => {
       console.log("Sign out failed");

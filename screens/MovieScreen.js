@@ -25,9 +25,10 @@ import {
   image500,
   fetchMovieTrailers,
 } from "../api/moviedb";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from "../components/loading";
 import { fetchMovieDetailsWithRating } from "../api/moviedb";
-
+import WebView from "react-native-webview"; // Import WebView
 const ios = Platform.OS == "ios";
 const topMargin = ios ? "" : "mt-3";
 var { width, height } = Dimensions.get("window");
@@ -40,9 +41,42 @@ export default function MovieScreen(route) {
   const [similarMovies, setSimilarMovies] = useState([]);
   const [isFavourite, toggleFavourite] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [trailerUrl, setTrailerUrl] = useState(null);
+  const [isBookmarked, setBookmarked] = useState(false);
 
   const id = route?.params?.id || item?.id;
   const [movieDetails, setMovieDetails] = useState(null);
+
+  const checkIfBookmarked = async (movieId) => {
+    // Kiểm tra xem bộ phim có trong bookmarks không
+    const bookmarks = await AsyncStorage.getItem('bookmarks');
+    const parsedBookmarks = bookmarks ? JSON.parse(bookmarks) : [];
+    const isBookmarked = parsedBookmarks.some((b) => b.id === movieId);
+    setBookmarked(isBookmarked);
+  };
+
+  const toggleBookmark = async () => {
+    // Đọc danh sách bookmark từ AsyncStorage
+    let bookmarks = await AsyncStorage.getItem('bookmarks');
+    bookmarks = bookmarks ? JSON.parse(bookmarks) : [];
+  
+    // Kiểm tra xem movie có trong bookmarks chưa
+    const index = bookmarks.findIndex((b) => b.id === id);
+  
+    if (index !== -1) {
+      // Nếu đã có trong bookmarks, loại bỏ khỏi danh sách
+      bookmarks.splice(index, 1);
+    } else {
+      // Nếu chưa có trong bookmarks, thêm vào danh sách
+      bookmarks.push(movie); // Save the entire movie object
+    }
+  
+    // Lưu lại danh sách bookmarks mới vào AsyncStorage
+    await AsyncStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+  
+    // Cập nhật trạng thái isBookmarked
+    setBookmarked(!isBookmarked);
+  };
 
   useEffect(() => {
     const getMovieDetails = async () => {
@@ -58,6 +92,7 @@ export default function MovieScreen(route) {
     getMovieDetails(item.id);
     getMovieCredits(item.id);
     getSimilarMovies(item.id);
+    checkIfBookmarked(id);
   }, [item]);
 
   const getMovieDetails = async (id) => {
@@ -90,12 +125,11 @@ export default function MovieScreen(route) {
 
     if (trailers && trailers.results && trailers.results.length > 0) {
       const trailerKey = trailers.results[0].key;
-      Linking.openURL(`https://www.youtube.com/watch?v=${trailerKey}`);
+      setTrailerUrl(`https://www.youtube.com/embed/${trailerKey}`);
     } else {
       alert("No trailer found");
     }
   };
-
   return (
     <ScrollView
       contentContainerStyle={{ paddingBottom: 20 }}
@@ -116,10 +150,10 @@ export default function MovieScreen(route) {
             <ChevronLeftIcon size="28" strokeWidth={2.5} color="white" />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => toggleFavourite(!isFavourite)}>
+          <TouchableOpacity onPress={toggleBookmark}>
             <HeartIcon
               size="35"
-              color={isFavourite ? theme.background : "white"}
+              color={isBookmarked ? theme.background : "white"}
             />
           </TouchableOpacity>
         </SafeAreaView>
@@ -161,12 +195,12 @@ export default function MovieScreen(route) {
             </View>
           </View>
         )}
-        <View className="flex-row justify-center mx-4 space-x-2">
+        <View className="flex-row flex-wrap justify-center mx-4 space-x-2">
           {movie?.genres?.map((genre, index) => {
             return (
               <Text
                 key={index}
-                className="text-white bg-neutral-700 px-3 py-1 rounded-md text-sm"
+                className="text-white bg-neutral-700 px-3 py-1 my-1 rounded-md text-sm"
               >
                 {genre?.name}
               </Text>
@@ -174,11 +208,19 @@ export default function MovieScreen(route) {
           })}
         </View>
         <TouchableOpacity
-          onPress={handleWatchTrailer}
-          className=" self-center py-3 px-3 bg-red-500 rounded-md"
-        >
-          <Text className="text-white text-base font-bold">Watch Trailer</Text>
-        </TouchableOpacity>
+        onPress={handleWatchTrailer}
+        className=" self-center py-3 px-3 bg-red-500 rounded-md"
+      >
+        <Text className="text-white text-base font-bold">Watch Trailer</Text>
+      </TouchableOpacity>
+
+      {/* Display WebView if trailerUrl is available */}
+      {trailerUrl && (
+        <View style={{ height: 300 }}>
+          <WebView source={{ uri: trailerUrl }} />
+        </View>
+      )}
+
         <Text className="text-neutral-400 mx-4 tracking-wide">
           {movie?.overview}
         </Text>
@@ -196,3 +238,5 @@ export default function MovieScreen(route) {
     </ScrollView>
   );
 }
+
+

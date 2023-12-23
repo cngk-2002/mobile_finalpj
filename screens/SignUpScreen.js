@@ -11,6 +11,15 @@ export default function SignUpScreen() {
   const [password, setPassword] = useState("");
 
   const handleSubmit = async () => {
+    if (!email || !email.includes('@')) {
+      Alert.alert('Invalid email', 'Please enter a valid email.');
+      return;
+    }
+  
+    if (!password || password.length < 6) {
+      Alert.alert('Invalid password', 'Password should be at least 6 characters long.');
+      return;
+    }
     if (email && password) {
       try {
         await createUserWithEmailAndPassword(auth, email, password);
