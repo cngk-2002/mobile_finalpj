@@ -164,12 +164,22 @@ export default function MovieScreen(route) {
         <View className="flex-row justify-center mx-4 space-x-2">
           {movie?.genres?.map((genre, index) => {
             return (
-              <Text
+              <TouchableOpacity
                 key={index}
-                className="text-white bg-neutral-700 px-3 py-1 rounded-md text-sm"
+                onPress={() => navigation.navigate("Genre", {
+                    genreId: genre.id,
+                    genreName: genre.name,
+                  })
+                }
+                style={{ marginRight: 8 }}
               >
-                {genre?.name}
-              </Text>
+                <Text
+                  key={index}
+                  className="text-white bg-neutral-700 px-3 py-1 rounded-md text-sm"
+                >
+                  {genre?.name}
+                </Text>
+              </TouchableOpacity>
             );
           })}
         </View>

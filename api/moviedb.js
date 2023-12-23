@@ -26,6 +26,8 @@ const movieTrailersEndpoint = (id) =>
 const popularMoviesEndpoint = `${apiBaseUrl}/movie/popular?api_key=${apiKey}`;
 const movieDetailsWithRatingEndpoint = (id) =>
   `${apiBaseUrl}/movie/${id}?api_key=${apiKey}&append_to_response=credits,videos`;
+const genreMoviesEndpoint = (genreId) =>
+  `${apiBaseUrl}/discover/movie?api_key=${apiKey}&with_genres=${genreId}`;
 
 
 // person
@@ -150,6 +152,32 @@ export const fetchPopularMovies = async (page = 1, pageSize = 20) => {
     return {};
   }
 };
+
+export const fetchGenresMovie = async (genreId, page = 1, pageSize = 20) => {
+  const params = {
+    page,
+    page_size: pageSize,
+    api_key: apiKey,
+  };
+
+  try {
+    let response = await apiCall(genreMoviesEndpoint(genreId), params);
+
+    if (response.total_pages > page) {
+      const nextPage = await apiCall(genreMoviesEndpoint(genreId), {
+        ...params,
+        page: page + 1,
+      });
+      response.results = response.results.concat(nextPage.results);
+    }
+
+    return response;
+  } catch (error) {
+    console.log("error: ", error);
+    return {};
+  }
+};
+
 
 export const fetchMovieDetailsWithRating = (id) => {
   return apiCall(movieDetailsWithRatingEndpoint(id));
