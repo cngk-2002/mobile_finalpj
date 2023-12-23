@@ -21,6 +21,7 @@ import TopRatedScreen from "../screens/TopRatedScreen";
 import Bookmark from "../screens/Bookmark";
 import { auth } from "../config/firebase";
 import { getAuth } from "firebase/auth";
+import GenreScreen from "../screens/GenreScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createNativeStackNavigator();
@@ -109,6 +110,11 @@ const HomeStack = () => {
       name="TopRated"
       options={{ headerShown: false }}
       component={TopRatedScreen}
+    />
+    <Stack.Screen
+      name="Genre"
+      options={{ headerShown: false }}
+      component={GenreScreen}
     />
   </Stack.Navigator>
   );
