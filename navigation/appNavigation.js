@@ -21,6 +21,7 @@ import TopRatedScreen from "../screens/TopRatedScreen";
 import Bookmark from "../screens/Bookmark";
 import { auth } from "../config/firebase";
 import { getAuth } from "firebase/auth";
+import GenreScreen from "../screens/GenreScreen";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -101,6 +102,11 @@ const HomeStack = () => {
       name="TopRated"
       options={{ headerShown: false }}
       component={TopRatedScreen}
+    />
+    <Stack.Screen
+      name="Genre"
+      options={{ headerShown: false }}
+      component={GenreScreen}
     />
   </Stack.Navigator>
   );
