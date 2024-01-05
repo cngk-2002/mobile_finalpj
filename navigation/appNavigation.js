@@ -15,6 +15,7 @@ import PersonScreen from "../screens/PersonScreen";
 import SearchScreen from "../screens/SearchScreen";
 import LoginScreen from "../screens/LoginScreen";
 import SignUpScreen from "../screens/SignUpScreen";
+import GenreList from "../screens/GenreList";
 import { useAuth } from "../hooks/useAuth";
 import UpcomingScreen from "../screens/UpcomingScreen";
 import TopRatedScreen from "../screens/TopRatedScreen";
@@ -35,6 +36,7 @@ function MyDrawer() {
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen name="Home" component={HomeStack}  options={{ headerShown: false }}/>
+      <Drawer.Screen name="Genres" component={GenreList}  options={{ headerShown: false }}/>
       <Drawer.Screen name="Bookmark" component={Bookmark}  options={{ headerShown: false }} />
       <Drawer.Screen name="Log Out" component={HandleLogOut}  options={{ headerShown: false }}/>
     </Drawer.Navigator>
@@ -115,6 +117,11 @@ const HomeStack = () => {
       name="Genre"
       options={{ headerShown: false }}
       component={GenreScreen}
+    />
+    <Stack.Screen
+      name="GenreList"
+      options={{ headerShown: false }}
+      component={GenreList}
     />
   </Stack.Navigator>
   );

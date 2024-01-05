@@ -11,6 +11,8 @@ const upcomingMoviesEndpoint = `${apiBaseUrl}/movie/upcoming?api_key=${apiKey}`;
 const topRatedMoviesEndpoint = `${apiBaseUrl}/movie/top_rated?api_key=${apiKey}`;
 const searchMoviesEndpoint = `${apiBaseUrl}/search/movie?api_key=${apiKey}`;
 const searchPeopleEndpoint = `${apiBaseUrl}/search/person?api_key=${apiKey}`;
+const genresEndpoint = `${apiBaseUrl}/genre/movie/list?api_key=${apiKey}`;
+
 
 // endpoints with dynamic params
 
@@ -63,6 +65,16 @@ const apiCall = async (endpoint, params) => {
   } catch (error) {
     console.log("error: ", error);
     return {};
+  }
+};
+
+export const fetchGenresList = async () => {
+  try {
+    const response = await apiCall(genresEndpoint);
+    return response.genres || [];
+  } catch (error) {
+    console.log("error: ", error);
+    return [];
   }
 };
 
